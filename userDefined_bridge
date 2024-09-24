@@ -1,0 +1,185 @@
+ sudo docker network create asis                                                               
+9e9132faca8e7aad14343645fd9fe367abc5bad93c996dd1096f99c557e6931d
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip address show                                                                               
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 40583sec preferred_lft 40583sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 40583sec preferred_lft 40583sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 602183sec preferred_lft 83497sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:d4ff:fecf:74d2/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default                                                                                  
+    link/ether b2:ef:13:b8:c0:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b0ef:13ff:feb8:c09a/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default                                                                                  
+    link/ether 7e:56:65:ce:50:03 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::7c56:65ff:fece:5003/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+13: veth988976a@if12: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether 72:dd:25:c1:14:e7 brd ff:ff:ff:ff:ff:ff link-netnsid 2
+    inet6 fe80::70dd:25ff:fec1:14e7/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+14: br-9e9132faca8e: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default 
+    link/ether 02:42:70:0b:70:04 brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-9e9132faca8e
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker network ls                                                                        
+NETWORK ID     NAME      DRIVER    SCOPE
+9e9132faca8e   asis      bridge    local
+e85b4acdefb1   bridge    bridge    local
+a4ca03f87fed   host      host      local
+5968552125ab   none      null      local
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --rm --network asis --name loki busybox                                  
+245de7fc08233b108d22f834de3d84e4501203f245ae061104847ebb9c8f15af
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --rm --network asis --name loken busybox                             
+5323f10b22c23cfdc19f3b2d33dc80a05265c11f0cbe171c50f71bd7f6552723
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ id address show                                                                               
+id: ‘address’: no such user
+id: ‘show’: no such user
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip address show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 40306sec preferred_lft 40306sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 40306sec preferred_lft 40306sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 601906sec preferred_lft 83220sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:d4ff:fecf:74d2/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default                                                                                  
+    link/ether b2:ef:13:b8:c0:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b0ef:13ff:feb8:c09a/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default                                                                                  
+    link/ether 7e:56:65:ce:50:03 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::7c56:65ff:fece:5003/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+13: veth988976a@if12: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether 72:dd:25:c1:14:e7 brd ff:ff:ff:ff:ff:ff link-netnsid 2
+    inet6 fe80::70dd:25ff:fec1:14e7/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+14: br-9e9132faca8e: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:70:0b:70:04 brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-9e9132faca8e
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:70ff:fe0b:7004/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+16: vethd0d8e1d@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether da:3c:96:47:22:af brd ff:ff:ff:ff:ff:ff link-netnsid 3
+    inet6 fe80::d83c:96ff:fe47:22af/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+18: veth0b5b1b6@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether e6:20:5e:20:6a:37 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+    inet6 fe80::e420:5eff:fe20:6a37/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ bridge link
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+13: veth988976a@if12: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+16: vethd0d8e1d@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-9e9132faca8e state forwarding priority 32 cost 2 
+18: veth0b5b1b6@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master br-9e9132faca8e state forwarding priority 32 cost 2 
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker inspect asis                                                                      
+[
+    {
+        "Name": "asis",
+        "Id": "9e9132faca8e7aad14343645fd9fe367abc5bad93c996dd1096f99c557e6931d",
+        "Created": "2024-09-24T09:57:36.984648433+01:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "245de7fc08233b108d22f834de3d84e4501203f245ae061104847ebb9c8f15af": {
+                "Name": "loki",
+                "EndpointID": "0861f0e76370db233cb6963aea8e0292aa6efd5d997fbcd7afd6fa802a72518d",
+                "MacAddress": "02:42:ac:12:00:02",
+                "IPv4Address": "172.18.0.2/16",
+                "IPv6Address": ""
+            },
+            "5323f10b22c23cfdc19f3b2d33dc80a05265c11f0cbe171c50f71bd7f6552723": {
+                "Name": "loken",
+                "EndpointID": "abfa3a50611d75fb25bba9fd3b0875a3c9c0efc1267a55801ae2a7767af26808",
+                "MacAddress": "02:42:ac:12:00:03",
+                "IPv4Address": "172.18.0.3/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {},
+        "Labels": {}
+    }
+]
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker exec -it tazan sh                                                                 
+/ # 
+/ # 
+/ # ping 172.18.0.3
+PING 172.18.0.3 (172.18.0.3): 56 data bytes
+exit
+
+

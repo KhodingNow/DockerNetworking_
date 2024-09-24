@@ -1,0 +1,451 @@
+]
+└─$ ip address show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 10.0.2.15/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+       valid_lft 75126sec preferred_lft 75126sec
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo systemctl restart docker
+[sudo] password for melezwa: 
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo systemctl status docker
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; preset: en>
+     Active: active (running) since Tue 2024-09-24 09:09:41 BST; 20s ago
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+   Main PID: 350310 (dockerd)
+      Tasks: 8
+     Memory: 40.9M (peak: 41.2M)
+        CPU: 1.785s
+     CGroup: /system.slice/docker.service
+             └─350310 /usr/sbin/dockerd -H fd:// --containerd=/run/containerd/co>
+
+Sep 24 09:09:39 melezwa dockerd[350310]: time="2024-09-24T09:09:39.890851441+01:>                         
+Sep 24 09:09:39 melezwa dockerd[350310]: time="2024-09-24T09:09:39.890891061+01:>                         
+Sep 24 09:09:40 melezwa dockerd[350310]: time="2024-09-24T09:09:40.019818820+01:>                         
+Sep 24 09:09:40 melezwa dockerd[350310]: time="2024-09-24T09:09:40.303569072+01:>                         
+Sep 24 09:09:41 melezwa dockerd[350310]: time="2024-09-24T09:09:41.024080274+01:>                         
+Sep 24 09:09:41 melezwa dockerd[350310]: time="2024-09-24T09:09:41.230587548+01:>                         
+Sep 24 09:09:41 melezwa dockerd[350310]: time="2024-09-24T09:09:41.416957867+01:>                         
+Sep 24 09:09:41 melezwa dockerd[350310]: time="2024-09-24T09:09:41.418926296+01:>                         
+Sep 24 09:09:41 melezwa systemd[1]: Started docker.service - Docker Application >                         
+Sep 24 09:09:41 melezwa dockerd[350310]: time="2024-09-24T09:09:41.490399704+01:>
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip address show                                                              
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 43147sec preferred_lft 43147sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 43147sec preferred_lft 43147sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 604747sec preferred_lft 86061sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default                                                                   
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+e85b4acdefb1   bridge    bridge    local
+a4ca03f87fed   host      host      local
+5968552125ab   none      null      local
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --rm --name tazan busybox
+Unable to find image 'busybox:latest' locally
+latest: Pulling from library/busybox
+2fce1e0cdfc5: Pull complete 
+Digest: sha256:c230832bd3b0be59a6c47ed64294f9ce71e91b327957920b6929a0caa8353140
+Status: Downloaded newer image for busybox:latest
+2a8bc84ab1f9405a2f5a78275ae91e7de563a759c282e325ae4bc811f8dc630e
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --rm --name manelisi busybox                                        
+d45e956d5b991bc9dc26896bb2ec03820bec19bfce0ec65a3169c16ee52ec5da
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --rm --name mannie nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+a2318d6c47ec: Pull complete 
+095d327c79ae: Pull complete 
+bbfaa25db775: Pull complete 
+7bb6fb0cfb2b: Pull complete 
+0723edc10c17: Pull complete 
+24b3fdc4d1e3: Pull complete 
+3122471704d5: Pull complete 
+Digest: sha256:04ba374043ccd2fc5c593885c0eacddebabd5ca375f9323666f28dfd5a9710e3
+Status: Downloaded newer image for nginx:latest
+e278a99ab99affe1561ab69e90a382a44d179394c2aac7ec94b8074e54cdf3f6
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker ps                                                                                
+CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS     NAMES
+e278a99ab99a   nginx     "/docker-entrypoint.…"   24 seconds ago       Up 22 seconds       80/tcp    mannie
+d45e956d5b99   busybox   "sh"                     About a minute ago   Up About a minute             manelisi
+2a8bc84ab1f9   busybox   "sh"                     2 minutes ago        Up 2 minutes                  tazan
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip address show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 42565sec preferred_lft 42565sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 42565sec preferred_lft 42565sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 604165sec preferred_lft 85479sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:d4ff:fecf:74d2/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default                                                                                  
+    link/ether b2:ef:13:b8:c0:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b0ef:13ff:feb8:c09a/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default                                                                                  
+    link/ether 7e:56:65:ce:50:03 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::7c56:65ff:fece:5003/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+9: veth03e6edd@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default                                                                                  
+    link/ether 66:36:4c:6f:63:1b brd ff:ff:ff:ff:ff:ff link-netnsid 2
+    inet6 fe80::6436:4cff:fe6f:631b/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ bridge link                                                                                   
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+9: veth03e6edd@if8: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 master docker0 state forwarding priority 32 cost 2 
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo inspect bridge                                                                           
+sudo: inspect: command not found
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker inspect bridge                                                                    
+[
+    {
+        "Name": "bridge",
+        "Id": "e85b4acdefb1b9eb009a82e88d2dc0afb62644d3b6247170f07f91f734d039bc",
+        "Created": "2024-09-24T09:09:41.024350244+01:00",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "2a8bc84ab1f9405a2f5a78275ae91e7de563a759c282e325ae4bc811f8dc630e": {
+                "Name": "tazan",
+                "EndpointID": "14e8af7bd4b824ea392b4741761d93b818d29d2cb322b891f7b9ec52f783bf5e",
+                "MacAddress": "02:42:ac:11:00:02",
+                "IPv4Address": "172.17.0.2/16",
+                "IPv6Address": ""
+            },
+            "d45e956d5b991bc9dc26896bb2ec03820bec19bfce0ec65a3169c16ee52ec5da": {
+                "Name": "manelisi",
+                "EndpointID": "32374774e5e30af2d2b758cf95a539a00710e7a11c9231724b8e7096a22f4c52",
+                "MacAddress": "02:42:ac:11:00:03",
+                "IPv4Address": "172.17.0.3/16",
+                "IPv6Address": ""
+            },
+            "e278a99ab99affe1561ab69e90a382a44d179394c2aac7ec94b8074e54cdf3f6": {
+                "Name": "mannie",
+                "EndpointID": "f0c7c58ff9628fcd717e129cab3482c7164264933addf05236c04bd5f05d15e4",
+                "MacAddress": "02:42:ac:11:00:04",
+                "IPv4Address": "172.17.0.4/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ winpty sudo docker exec -it tazan sh                                                          
+winpty: command not found
+
+┌──(melezwa㉿melezwa)-[~]
+└─$  sudo docker exec -it tazan sh                                                          
+/ # 
+/ # 
+/ # ip address show
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+4: eth0@if5: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue 
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+/ # ping 127.0.0.1
+PING 127.0.0.1 (127.0.0.1): 56 data bytes
+64 bytes from 127.0.0.1: seq=0 ttl=64 time=0.624 ms
+64 bytes from 127.0.0.1: seq=1 ttl=64 time=0.144 ms
+64 bytes from 127.0.0.1: seq=2 ttl=64 time=0.100 ms
+64 bytes from 127.0.0.1: seq=3 ttl=64 time=0.087 ms
+64 bytes from 127.0.0.1: seq=4 ttl=64 time=0.121 ms
+64 bytes from 127.0.0.1: seq=5 ttl=64 time=0.092 ms
+64 bytes from 127.0.0.1: seq=6 ttl=64 time=0.149 ms
+64 bytes from 127.0.0.1: seq=7 ttl=64 time=0.081 ms
+64 bytes from 127.0.0.1: seq=8 ttl=64 time=0.379 ms
+64 bytes from 127.0.0.1: seq=9 ttl=64 time=0.084 ms
+64 bytes from 127.0.0.1: seq=10 ttl=64 time=0.073 ms
+64 bytes from 127.0.0.1: seq=11 ttl=64 time=0.075 ms
+64 bytes from 127.0.0.1: seq=12 ttl=64 time=0.083 ms
+64 bytes from 127.0.0.1: seq=13 ttl=64 time=0.096 ms
+64 bytes from 127.0.0.1: seq=14 ttl=64 time=0.090 ms
+64 bytes from 127.0.0.1: seq=15 ttl=64 time=0.085 ms
+64 bytes from 127.0.0.1: seq=16 ttl=64 time=0.078 ms
+64 bytes from 127.0.0.1: seq=17 ttl=64 time=0.079 ms
+64 bytes from 127.0.0.1: seq=18 ttl=64 time=0.191 ms
+64 bytes from 127.0.0.1: seq=19 ttl=64 time=0.072 ms
+64 bytes from 127.0.0.1: seq=20 ttl=64 time=0.067 ms
+64 bytes from 127.0.0.1: seq=21 ttl=64 time=0.077 ms
+64 bytes from 127.0.0.1: seq=22 ttl=64 time=0.072 ms
+64 bytes from 127.0.0.1: seq=23 ttl=64 time=0.143 ms
+64 bytes from 127.0.0.1: seq=24 ttl=64 time=0.124 ms
+64 bytes from 127.0.0.1: seq=25 ttl=64 time=0.103 ms
+64 bytes from 127.0.0.1: seq=26 ttl=64 time=0.081 ms
+64 bytes from 127.0.0.1: seq=27 ttl=64 time=0.079 ms
+64 bytes from 127.0.0.1: seq=28 ttl=64 time=0.077 ms
+64 bytes from 127.0.0.1: seq=29 ttl=64 time=0.168 ms
+64 bytes from 127.0.0.1: seq=30 ttl=64 time=0.175 ms
+64 bytes from 127.0.0.1: seq=31 ttl=64 time=0.086 ms
+64 bytes from 127.0.0.1: seq=32 ttl=64 time=0.078 ms
+q64 bytes from 127.0.0.1: seq=33 ttl=64 time=0.145 ms
+64 bytes from 127.0.0.1: seq=34 ttl=64 time=0.601 ms
+64 bytes from 127.0.0.1: seq=35 ttl=64 time=0.612 ms
+64 bytes from 127.0.0.1: seq=36 ttl=64 time=0.158 ms
+64 bytes from 127.0.0.1: seq=37 ttl=64 time=0.077 ms
+x64 bytes from 127.0.0.1: seq=38 ttl=64 time=0.143 ms
+64 bytes from 127.0.0.1: seq=39 ttl=64 time=0.000 ms
+exi64 bytes from 127.0.0.1: seq=40 ttl=64 time=0.083 ms
+t64 bytes from 127.0.0.1: seq=41 ttl=64 time=0.157 ms
+64 bytes from 127.0.0.1: seq=42 ttl=64 time=0.159 ms
+64 bytes from 127.0.0.1: seq=43 ttl=64 time=0.125 ms
+^C
+--- 127.0.0.1 ping statistics ---
+44 packets transmitted, 44 packets received, 0% packet loss
+round-trip min/avg/max = 0.000/0.144/0.624 ms
+/ # ping 172.17.0.4
+PING 172.17.0.4 (172.17.0.4): 56 data bytes
+64 bytes from 172.17.0.4: seq=0 ttl=64 time=31.916 ms
+64 bytes from 172.17.0.4: seq=1 ttl=64 time=0.150 ms
+64 bytes from 172.17.0.4: seq=2 ttl=64 time=0.221 ms
+64 bytes from 172.17.0.4: seq=3 ttl=64 time=0.882 ms
+64 bytes from 172.17.0.4: seq=4 ttl=64 time=0.203 ms
+64 bytes from 172.17.0.4: seq=5 ttl=64 time=0.159 ms
+64 bytes from 172.17.0.4: seq=6 ttl=64 time=0.359 ms
+64 bytes from 172.17.0.4: seq=7 ttl=64 time=0.213 ms
+64 bytes from 172.17.0.4: seq=8 ttl=64 time=0.195 ms
+64 bytes from 172.17.0.4: seq=9 ttl=64 time=0.208 ms
+64 bytes from 172.17.0.4: seq=10 ttl=64 time=0.361 ms
+64 bytes from 172.17.0.4: seq=11 ttl=64 time=0.245 ms
+64 bytes from 172.17.0.4: seq=12 ttl=64 time=0.199 ms
+64 bytes from 172.17.0.4: seq=13 ttl=64 time=0.215 ms
+64 bytes from 172.17.0.4: seq=14 ttl=64 time=0.121 ms
+64 bytes from 172.17.0.4: seq=15 ttl=64 time=0.208 ms
+64 bytes from 172.17.0.4: seq=16 ttl=64 time=0.218 ms
+64 bytes from 172.17.0.4: seq=17 ttl=64 time=0.207 ms
+64 bytes from 172.17.0.4: seq=18 ttl=64 time=0.203 ms
+64 bytes from 172.17.0.4: seq=19 ttl=64 time=0.216 ms
+64 bytes from 172.17.0.4: seq=20 ttl=64 time=0.120 ms
+64 bytes from 172.17.0.4: seq=21 ttl=64 time=0.307 ms
+64 bytes from 172.17.0.4: seq=22 ttl=64 time=0.246 ms
+64 bytes from 172.17.0.4: seq=23 ttl=64 time=0.254 ms
+64 bytes from 172.17.0.4: seq=24 ttl=64 time=0.236 ms
+64 bytes from 172.17.0.4: seq=25 ttl=64 time=0.793 ms                                                                                                                                                                                       
+64 bytes from 172.17.0.4: seq=26 ttl=64 time=0.144 ms                                                                                                                                                                                       
+64 bytes from 172.17.0.4: seq=27 ttl=64 time=0.202 ms                                                                                                                                                                                       
+64 bytes from 172.17.0.4: seq=28 ttl=64 time=0.146 ms
+64 bytes from 172.17.0.4: seq=29 ttl=64 time=0.185 ms
+64 bytes from 172.17.0.4: seq=30 ttl=64 time=0.235 ms
+64 bytes from 172.17.0.4: seq=31 ttl=64 time=0.243 ms
+64 bytes from 172.17.0.4: seq=32 ttl=64 time=0.278 ms
+64 bytes from 172.17.0.4: seq=33 ttl=64 time=0.268 ms
+64 bytes from 172.17.0.4: seq=34 ttl=64 time=0.355 ms
+64 bytes from 172.17.0.4: seq=35 ttl=64 time=0.421 ms
+64 bytes from 172.17.0.4: seq=36 ttl=64 time=0.331 ms
+64 bytes from 172.17.0.4: seq=37 ttl=64 time=0.124 ms
+64 bytes from 172.17.0.4: seq=38 ttl=64 time=0.251 ms
+64 bytes from 172.17.0.4: seq=39 ttl=64 time=0.189 ms
+64 bytes from 172.17.0.4: seq=40 ttl=64 time=0.267 ms
+64 bytes from 172.17.0.4: seq=41 ttl=64 time=0.179 ms
+64 bytes from 172.17.0.4: seq=42 ttl=64 time=0.272 ms
+64 bytes from 172.17.0.4: seq=43 ttl=64 time=0.775 ms
+64 bytes from 172.17.0.4: seq=44 ttl=64 time=1.103 ms
+64 bytes from 172.17.0.4: seq=45 ttl=64 time=0.234 ms
+64 bytes from 172.17.0.4: seq=46 ttl=64 time=0.131 ms
+64 bytes from 172.17.0.4: seq=47 ttl=64 time=0.233 ms
+64 bytes from 172.17.0.4: seq=48 ttl=64 time=0.223 ms
+64 bytes from 172.17.0.4: seq=49 ttl=64 time=0.260 ms
+64 bytes from 172.17.0.4: seq=50 ttl=64 time=0.717 ms
+64 bytes from 172.17.0.4: seq=51 ttl=64 time=0.179 ms
+64 bytes from 172.17.0.4: seq=52 ttl=64 time=0.137 ms
+64 bytes from 172.17.0.4: seq=53 ttl=64 time=0.234 ms
+64 bytes from 172.17.0.4: seq=54 ttl=64 time=0.193 ms
+64 bytes from 172.17.0.4: seq=55 ttl=64 time=0.128 ms
+64 bytes from 172.17.0.4: seq=56 ttl=64 time=0.152 ms
+64 bytes from 172.17.0.4: seq=57 ttl=64 time=0.815 ms
+64 bytes from 172.17.0.4: seq=58 ttl=64 time=0.508 ms
+64 bytes from 172.17.0.4: seq=59 ttl=64 time=0.183 ms
+64 bytes from 172.17.0.4: seq=60 ttl=64 time=0.383 ms
+64 bytes from 172.17.0.4: seq=61 ttl=64 time=0.238 ms
+64 bytes from 172.17.0.4: seq=62 ttl=64 time=0.117 ms
+64 bytes from 172.17.0.4: seq=63 ttl=64 time=0.118 ms
+64 bytes from 172.17.0.4: seq=64 ttl=64 time=0.122 ms
+64 bytes from 172.17.0.4: seq=65 ttl=64 time=0.118 ms
+64 bytes from 172.17.0.4: seq=66 ttl=64 time=0.121 ms
+64 bytes from 172.17.0.4: seq=67 ttl=64 time=0.113 ms
+64 bytes from 172.17.0.4: seq=68 ttl=64 time=0.120 ms
+64 bytes from 172.17.0.4: seq=69 ttl=64 time=0.113 ms
+64 bytes from 172.17.0.4: seq=70 ttl=64 time=0.277 ms
+64 bytes from 172.17.0.4: seq=71 ttl=64 time=0.219 ms
+64 bytes from 172.17.0.4: seq=72 ttl=64 time=0.126 ms
+64 bytes from 172.17.0.4: seq=73 ttl=64 time=0.255 ms
+64 bytes from 172.17.0.4: seq=74 ttl=64 time=0.125 ms
+64 bytes from 172.17.0.4: seq=75 ttl=64 time=0.125 ms
+64 bytes from 172.17.0.4: seq=76 ttl=64 time=0.203 ms
+64 bytes from 172.17.0.4: seq=77 ttl=64 time=0.263 ms
+64 bytes from 172.17.0.4: seq=78 ttl=64 time=0.216 ms
+64 bytes from 172.17.0.4: seq=79 ttl=64 time=0.130 ms
+64 bytes from 172.17.0.4: seq=80 ttl=64 time=0.264 ms
+64 bytes from 172.17.0.4: seq=81 ttl=64 time=0.260 ms
+64 bytes from 172.17.0.4: seq=82 ttl=64 time=0.128 ms
+64 bytes from 172.17.0.4: seq=83 ttl=64 time=0.122 ms
+64 bytes from 172.17.0.4: seq=84 ttl=64 time=0.120 ms
+64 bytes from 172.17.0.4: seq=85 ttl=64 time=0.123 ms
+64 bytes from 172.17.0.4: seq=86 ttl=64 time=0.122 ms
+64 bytes from 172.17.0.4: seq=87 ttl=64 time=0.121 ms
+64 bytes from 172.17.0.4: seq=88 ttl=64 time=0.122 ms
+64 bytes from 172.17.0.4: seq=89 ttl=64 time=0.118 ms
+64 bytes from 172.17.0.4: seq=90 ttl=64 time=0.191 ms
+64 bytes from 172.17.0.4: seq=91 ttl=64 time=0.323 ms
+64 bytes from 172.17.0.4: seq=92 ttl=64 time=0.115 ms
+64 bytes from 172.17.0.4: seq=93 ttl=64 time=0.385 ms
+64 bytes from 172.17.0.4: seq=94 ttl=64 time=0.201 ms
+64 bytes from 172.17.0.4: seq=95 ttl=64 time=0.263 ms
+64 bytes from 172.17.0.4: seq=96 ttl=64 time=0.120 ms
+64 bytes from 172.17.0.4: seq=97 ttl=64 time=0.123 ms
+^C
+--- 172.17.0.4 ping statistics ---
+98 packets transmitted, 98 packets received, 0% packet loss
+round-trip min/avg/max = 0.113/0.568/31.916 ms
+/ # 
+/ # ping www.vodacom.co.za
+PING www.vodacom.co.za (196.207.45.2): 56 data bytes
+64 bytes from 196.207.45.2: seq=0 ttl=56 time=128.683 ms
+64 bytes from 196.207.45.2: seq=1 ttl=56 time=144.399 ms
+64 bytes from 196.207.45.2: seq=2 ttl=56 time=64.341 ms
+64 bytes from 196.207.45.2: seq=3 ttl=56 time=86.608 ms
+64 bytes from 196.207.45.2: seq=4 ttl=56 time=108.333 ms
+64 bytes from 196.207.45.2: seq=5 ttl=56 time=30.926 ms
+64 bytes from 196.207.45.2: seq=6 ttl=56 time=30.789 ms
+64 bytes from 196.207.45.2: seq=7 ttl=56 time=25.489 ms
+64 bytes from 196.207.45.2: seq=8 ttl=56 time=26.231 ms
+64 bytes from 196.207.45.2: seq=9 ttl=56 time=119.776 ms
+64 bytes from 196.207.45.2: seq=10 ttl=56 time=139.495 ms
+64 bytes from 196.207.45.2: seq=11 ttl=56 time=61.144 ms
+64 bytes from 196.207.45.2: seq=12 ttl=56 time=28.358 ms
+^C
+--- www.vodacom.co.za ping statistics ---
+13 packets transmitted, 13 packets received, 0% packet loss
+round-trip min/avg/max = 25.489/76.505/144.399 ms
+/ # exit
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker stop mannie                                                                       
+mannie
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --rm -p 80:80 --name mannie nginx                       
+cf48332751f39ea2ebe71869a070cd47a0bec946a48b69c792abf2356167ae85
+docker: Error response from daemon: driver failed programming external connectivity on endpoint mannie (a3fbfa66c31a9e94ed6e1f805033a1cb5cdf17cdb70b4d11d898d42257a042ed): Error starting userland proxy: listen tcp4 0.0.0.0:80: bind: address already in use.
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo lsof -i :80                                                                              
+COMMAND PID     USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+apache2 789     root    4u  IPv6   6987      0t0  TCP *:http (LISTEN)
+apache2 828 www-data    4u  IPv6   6987      0t0  TCP *:http (LISTEN)
+apache2 829 www-data    4u  IPv6   6987      0t0  TCP *:http (LISTEN)
+apache2 830 www-data    4u  IPv6   6987      0t0  TCP *:http (LISTEN)
+apache2 831 www-data    4u  IPv6   6987      0t0  TCP *:http (LISTEN)
+apache2 832 www-data    4u  IPv6   6987      0t0  TCP *:http (LISTEN)
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo systemctl stop apache2                                                                   
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --rm -p 80:80 --name mannie nginx                             
+b6d97b1e314ba28dd0f26beb055a6f4ad05c7a1d8201ad1e6b0621baba6c7033
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker ps                                                                                
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                               NAMES
+b6d97b1e314b   nginx     "/docker-entrypoint.…"   40 seconds ago   Up 39 seconds   0.0.0.0:80->80/tcp, :::80->80/tcp   mannie
+d45e956d5b99   busybox   "sh"                     21 minutes ago   Up 21 minutes                                       manelisi
+2a8bc84ab1f9   busybox   "sh"                     22 minutes ago   Up 22 minutes    

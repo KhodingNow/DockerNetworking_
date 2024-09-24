@@ -1,0 +1,436 @@
+──(melezwa㉿melezwa)-[~]
+└─$ docker ps                                                                                                                                                                                                                               
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS             PORTS     NAMES
+731df5ccb08b   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour             mannie
+5323f10b22c2   busybox   "sh"                     2 hours ago         Up 2 hours                   loken
+245de7fc0823   busybox   "sh"                     2 hours ago         Up 2 hours                   loki
+d45e956d5b99   busybox   "sh"                     3 hours ago         Up 3 hours                   manelisi
+2a8bc84ab1f9   busybox   "sh"                     3 hours ago         Up 3 hours                   tazan
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network s                                                                                                                                                                                                                        
+
+Usage:  docker network COMMAND
+
+Manage networks
+
+Commands:
+  connect     Connect a container to a network
+  create      Create a network
+  disconnect  Disconnect a container from a network
+  inspect     Display detailed information on one or more networks
+  ls          List networks
+  prune       Remove all unused networks
+  rm          Remove one or more networks
+
+Run 'docker network COMMAND --help' for more information on a command.
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network ls                                                                                                                                                                                                                       
+NETWORK ID     NAME      DRIVER    SCOPE
+9e9132faca8e   asis      bridge    local
+e85b4acdefb1   bridge    bridge    local
+a4ca03f87fed   host      host      local
+5968552125ab   none      null      local
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network create --driver macvlan --subnet 192.168.1.0/24 --gateway 192.168.1.1 -o parent                                                                                                                                          =enp0s3 macnet
+Error response from daemon: invalid subinterface vlan name enp0s3, example formatting is eth0.10
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network create --driver macvlan --subnet 192.168.1.0/24 --gateway 192.168.1.1 --o parent=eth0 macnet32
+unknown flag: --o
+See 'docker network create --help'.
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network create --driver macvlan --subnet 192.168.1.0/24 --gateway 192.168.1.1 -o parent                                                                                                                                          =eth0 macnet32
+74d9c0d520010644e804653d5f49666f77254962565b183a1eef48e70b227b06
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network ls                                                                                                                                                                                                                       
+NETWORK ID     NAME       DRIVER    SCOPE
+9e9132faca8e   asis       bridge    local
+e85b4acdefb1   bridge     bridge    local
+a4ca03f87fed   host       host      local
+74d9c0d52001   macnet32   macvlan   local
+5968552125ab   none       null      local
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker run -itd --network macnet32 --name cont1 --ip 192.168.1.50 busybox                                                                                                                                                               
+42948151a903c73242e8fbd4e252d7a0f6b9b554f4591375bc8c2d63d2b9429d
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker ps                                                                                                                                                                                                                               
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+42948151a903   busybox   "sh"                     26 seconds ago   Up 23 seconds             cont1
+731df5ccb08b   nginx     "/docker-entrypoint.…"   2 hours ago      Up 2 hours                mannie
+5323f10b22c2   busybox   "sh"                     2 hours ago      Up 2 hours                loken
+245de7fc0823   busybox   "sh"                     2 hours ago      Up 2 hours                loki
+d45e956d5b99   busybox   "sh"                     3 hours ago      Up 3 hours                manelisi
+2a8bc84ab1f9   busybox   "sh"                     3 hours ago      Up 3 hours                tazan
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker ps                                                                                                                                                                                                                               
+CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS     NAMES
+42948151a903   busybox   "sh"                     About a minute ago   Up About a minute             cont1
+731df5ccb08b   nginx     "/docker-entrypoint.…"   2 hours ago          Up 2 hours                    mannie
+5323f10b22c2   busybox   "sh"                     2 hours ago          Up 2 hours                    loken
+245de7fc0823   busybox   "sh"                     2 hours ago          Up 2 hours                    loki
+d45e956d5b99   busybox   "sh"                     3 hours ago          Up 3 hours                    manelisi
+2a8bc84ab1f9   busybox   "sh"                     3 hours ago          Up 3 hours                    tazan
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker exec -it cont1 sh                                                                                                                                                                                                                
+/ # 
+/ # ip address
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+19: eth0@if2: <BROADCAST,MULTICAST,UP,LOWER_UP,M-DOWN> mtu 1500 qdisc noqueue 
+    link/ether 02:42:c0:a8:01:32 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.50/24 brd 192.168.1.255 scope global eth0
+       valid_lft forever preferred_lft forever
+/ # ^C
+
+/ # exit
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --network macnet32 --ip 192.168.1.52                                                                                                                                                                               
+[sudo] password for melezwa: 
+"docker run" requires at least 1 argument.
+See 'docker run --help'.
+
+Usage:  docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Run a command in a new container
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo docker run -itd --network macnet32 --ip 192.168.1.52 --name cont2 nginx 
+ef0fff647182d09d7c3ae51fbde7185029f647f2ffa58d1dc666c0a7237ed850
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker ps                                                                                                                                                                                                                               
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS     NAMES
+ef0fff647182   nginx     "/docker-entrypoint.…"   18 seconds ago   Up 17 seconds             cont2
+42948151a903   busybox   "sh"                     18 minutes ago   Up 18 minutes             cont1
+731df5ccb08b   nginx     "/docker-entrypoint.…"   2 hours ago      Up 2 hours                mannie
+5323f10b22c2   busybox   "sh"                     3 hours ago      Up 2 hours                loken
+245de7fc0823   busybox   "sh"                     3 hours ago      Up 3 hours                loki
+d45e956d5b99   busybox   "sh"                     3 hours ago      Up 3 hours                manelisi
+2a8bc84ab1f9   busybox   "sh"                     3 hours ago      Up 3 hours                tazan
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network inspect macnet32
+[
+    {
+        "Name": "macnet32",
+        "Id": "74d9c0d520010644e804653d5f49666f77254962565b183a1eef48e70b227b06",
+        "Created": "2024-09-24T12:09:30.961753177+01:00",
+        "Scope": "local",
+        "Driver": "macvlan",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": {},
+            "Config": [
+                {
+                    "Subnet": "192.168.1.0/24",
+                    "Gateway": "192.168.1.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "42948151a903c73242e8fbd4e252d7a0f6b9b554f4591375bc8c2d63d2b9429d": {
+                "Name": "cont1",
+                "EndpointID": "6df01c823819ec2874bab5bb73a961bac11c0d34c9e811ec0362c2f1535bf749",
+                "MacAddress": "02:42:c0:a8:01:32",
+                "IPv4Address": "192.168.1.50/24",
+                "IPv6Address": ""
+            },
+            "ef0fff647182d09d7c3ae51fbde7185029f647f2ffa58d1dc666c0a7237ed850": {
+                "Name": "cont2",
+                "EndpointID": "b9820f80f3ee92fa8b55819559b7054f4ea45fbbc37dfd9dfd9027dce4f2db05",
+                "MacAddress": "02:42:c0:a8:01:34",
+                "IPv4Address": "192.168.1.52/24",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {
+            "parent": "eth0"
+        },
+        "Labels": {}
+    }
+]
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ping 192.168.1.52/24
+ping: 192.168.1.52/24: Name or service not known
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ping 192.168.1.52/24                                                                                          
+ping: 192.168.1.52/24: Name or service not known
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ifconfig enp0s3 promisc
+enp0s3: ERROR while getting interface flags: No such device
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip a                                                                                                          
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 30451sec preferred_lft 30451sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 30451sec preferred_lft 30451sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 592051sec preferred_lft 73365sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:d4ff:fecf:74d2/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether b2:ef:13:b8:c0:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b0ef:13ff:feb8:c09a/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether 7e:56:65:ce:50:03 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::7c56:65ff:fece:5003/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+14: br-9e9132faca8e: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:70:0b:70:04 brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-9e9132faca8e
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:70ff:fe0b:7004/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+16: vethd0d8e1d@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether da:3c:96:47:22:af brd ff:ff:ff:ff:ff:ff link-netnsid 3
+    inet6 fe80::d83c:96ff:fe47:22af/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+18: veth0b5b1b6@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether e6:20:5e:20:6a:37 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+    inet6 fe80::e420:5eff:fe20:6a37/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo ip link set eth0 promisc on                                                                              
+[sudo] password for melezwa: 
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,PROMISC,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 30070sec preferred_lft 30070sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 30070sec preferred_lft 30070sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 591670sec preferred_lft 72984sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:d4ff:fecf:74d2/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether b2:ef:13:b8:c0:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b0ef:13ff:feb8:c09a/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether 7e:56:65:ce:50:03 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::7c56:65ff:fece:5003/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+14: br-9e9132faca8e: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:70:0b:70:04 brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-9e9132faca8e
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:70ff:fe0b:7004/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+16: vethd0d8e1d@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether da:3c:96:47:22:af brd ff:ff:ff:ff:ff:ff link-netnsid 3
+    inet6 fe80::d83c:96ff:fe47:22af/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+18: veth0b5b1b6@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether e6:20:5e:20:6a:37 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+    inet6 fe80::e420:5eff:fe20:6a37/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ifconfig eth0 192.168.0.248/24                                                                                
+SIOCSIFADDR: Operation not permitted
+SIOCSIFFLAGS: Operation not permitted
+SIOCSIFNETMASK: Operation not permitted
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ifconfig 192.168.0.248/24                                                                                
+192.168.0.248/2: error fetching interface information: Device not found
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ifconfig 192.168.0.248/24 promisc                                                                             
+192.168.0.248/2: ERROR while getting interface flags: No such device
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ifconfig eth0 192.168.0.248/24 promisc                                                                        
+SIOCSIFADDR: Operation not permitted
+SIOCSIFFLAGS: Operation not permitted
+SIOCSIFFLAGS: Operation not permitted
+SIOCSIFNETMASK: Operation not permitted
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ sudo ip link set eth0 promisc on                                                                              
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip a                                                                                                          
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,PROMISC,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 29528sec preferred_lft 29528sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 29528sec preferred_lft 29528sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 591128sec preferred_lft 72442sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:d4ff:fecf:74d2/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether b2:ef:13:b8:c0:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b0ef:13ff:feb8:c09a/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether 7e:56:65:ce:50:03 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::7c56:65ff:fece:5003/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+14: br-9e9132faca8e: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:70:0b:70:04 brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-9e9132faca8e
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:70ff:fe0b:7004/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+16: vethd0d8e1d@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether da:3c:96:47:22:af brd ff:ff:ff:ff:ff:ff link-netnsid 3
+    inet6 fe80::d83c:96ff:fe47:22af/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+18: veth0b5b1b6@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether e6:20:5e:20:6a:37 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+    inet6 fe80::e420:5eff:fe20:6a37/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ ip address                                                                                                    
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,PROMISC,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 08:00:27:a1:09:3d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.248/24 brd 192.168.0.255 scope global dynamic noprefixroute eth0
+       valid_lft 29434sec preferred_lft 29434sec
+    inet6 fd1a:49cd:66d0::a05/128 scope global dynamic noprefixroute 
+       valid_lft 29434sec preferred_lft 29434sec
+    inet6 fd1a:49cd:66d0:0:1748:f902:fcb2:c4c7/64 scope global temporary dynamic 
+       valid_lft 591034sec preferred_lft 72348sec
+    inet6 fd1a:49cd:66d0:0:a00:27ff:fea1:93d/64 scope global mngtmpaddr noprefixroute 
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fea1:93d/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:d4:cf:74:d2 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:d4ff:fecf:74d2/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+5: vethb12dcef@if4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether b2:ef:13:b8:c0:9a brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::b0ef:13ff:feb8:c09a/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+7: veth9dc77df@if6: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether 7e:56:65:ce:50:03 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+    inet6 fe80::7c56:65ff:fece:5003/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+14: br-9e9132faca8e: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:70:0b:70:04 brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-9e9132faca8e
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:70ff:fe0b:7004/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+16: vethd0d8e1d@if15: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether da:3c:96:47:22:af brd ff:ff:ff:ff:ff:ff link-netnsid 3
+    inet6 fe80::d83c:96ff:fe47:22af/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+18: veth0b5b1b6@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master br-9e9132faca8e state UP group default 
+    link/ether e6:20:5e:20:6a:37 brd ff:ff:ff:ff:ff:ff link-netnsid 4
+    inet6 fe80::e420:5eff:fe20:6a37/64 scope link proto kernel_ll 
+       valid_lft forever preferred_lft forever
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker run -itd --network macnet32 --ip 192.168.1.53 --name cont3 nginx                                      
+90ee6aa98be28bed7a3826e32c51dab02190728e03b7d58077f11f7476b7e1b2
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker ps                                                                                                     
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS             PORTS     NAMES
+90ee6aa98be2   nginx     "/docker-entrypoint.…"   15 minutes ago      Up 15 minutes                cont3
+ef0fff647182   nginx     "/docker-entrypoint.…"   52 minutes ago      Up 52 minutes                cont2
+42948151a903   busybox   "sh"                     About an hour ago   Up About an hour             cont1
+731df5ccb08b   nginx     "/docker-entrypoint.…"   3 hours ago         Up 3 hours                   mannie
+5323f10b22c2   busybox   "sh"                     3 hours ago         Up 3 hours                   loken
+245de7fc0823   busybox   "sh"                     3 hours ago         Up 3 hours                   loki
+d45e956d5b99   busybox   "sh"                     4 hours ago         Up 4 hours                   manelisi
+2a8bc84ab1f9   busybox   "sh"                     4 hours ago         Up 4 hours                   tazan
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network rm macnet32                                                                                    
+Error response from daemon: error while removing network: network macnet32 id 74d9c0d520010644e804653d5f49666f77254962565b183a1eef48e70b227b06 has active endpoints
+
+┌──(melezwa㉿melezwa)-[~]
+└─$ docker network ls                                                                                             
+NETWORK ID     NAME       DRIVER    SCOPE
+9e9132faca8e   asis       bridge    local
+e85b4acdefb1   bridge     bridge    local
+a4ca03f87fed   host       host      local
+74d9c0d52001   macnet32   macvlan   local
+5968552125ab   none       null      local
